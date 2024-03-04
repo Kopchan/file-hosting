@@ -4,16 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FileStoreRequest extends ApiRequest
+class UploadRequest extends ApiRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +14,7 @@ class FileStoreRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|max:2048|mimes:doc,pdf,docx,zip,jpeg,jpg,png'
+            'files'   => 'required|array',
         ];
     }
 }
