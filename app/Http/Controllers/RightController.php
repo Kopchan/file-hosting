@@ -22,6 +22,8 @@ class RightController extends Controller
             throw new ApiException(403, 'Forbidden for you');
 
         $coAuthor = User::where('email', $request->email)->first();
+        if ($author->id == $coAuthor->id)
+            throw new ApiException(409, 'You owner of this file');
 
         $right = Right
             ::where('user_id', $coAuthor->id)
@@ -46,7 +48,8 @@ class RightController extends Controller
             ],
             ...CoAuthorResource::collection($rights),
         ]);
-    }public function destroy(RightChangeRequest $request, $file_id) {
+    }
+    public function destroy(RightChangeRequest $request, $file_id) {
         $file = File::where('file_id', $file_id)->first();
         if (!$file)
             throw new ApiException(404, 'File not found');

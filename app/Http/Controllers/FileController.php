@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\ApiException;
 use App\Http\Requests\EditRequest;
 use App\Http\Requests\UploadRequest;
+use App\Http\Resources\FileResource;
 use App\Models\File;
 use App\Models\Right;
 use Illuminate\Support\Facades\Auth;
@@ -127,5 +128,24 @@ class FileController extends Controller
         $path = Storage::disk("local")->path("$file->path/$file->name");
 
         return response()->download($path, basename($path));
+    }
+    public function owned() {
+        $files = File::where('user_id', Auth::id())->get();
+        if (count($files) < 1)
+            throw new ApiException(404, 'Owned files not found');
+
+        return response(FileResource::collection($files));
+    }
+    public function allowed(){
+        $rights = Right::where('user_id', Auth::id())->get();
+        if (count($rights) < 1)
+            throw new ApiException(404, 'Shared files not found');
+
+        foreach ($rights as $right){
+            $rightIds[] = $right->file_id;
+        }
+        $files = File::whereIn('id', $rightIds)->get();
+
+        return response(FileResource::collection($files));
     }
 }
