@@ -29,7 +29,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('shared', 'allowed');
 
         Route::post  (''    , 'upload'  );
-        Route::get   ('{id}', 'download');
+        Route::get   ('{id}', 'download')->name('download');
         Route::patch ('{id}', 'edit'    );
         Route::delete('{id}', 'destroy' );
     });
